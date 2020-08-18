@@ -3,122 +3,65 @@
 
 
 <br><br>
-### 1.timestretch , reversed data
+### 1.original data + timestretch
 #### [DenseNet0818.ipynb](https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/DenseNet0818.ipynb)
 <br>
 
-<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/data.png" height=500px width=600px> </img>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/data.png" height=500px width=700px> </img>
 
 
-binary_search : zero padding 시작되는 column의 (index -1) 반환 <br>
-columns  : (binary_search 반환값 +1)이 저장된 list
-
-
-
+처음 zero padding 된 data 1000개 + zero padding 제거한 data 1000개로 학습한 결과입니다.
 <br>
-
-~~~python
-
-hop_length = 250
-NFFT = 512
-n_freq = (NFFT//2)-1
-
-
-for idx in range( y_data.shape[0] ):
-
-    fixed_rate = math.ceil( columns[idx] / 382 * 0.95 * 100 ) / 100
-
-    aug1 = nn.Sequential(
-            transforms.TimeStretch( 
-                hop_length=hop_length, 
-                n_freq=n_freq, 
-                fixed_rate=fixed_rate 
-           ))
-
-    aug1 = aug1.cuda()
-    out_left = aug( STFT_left[idx] )
-
-~~~
-fixed_rate = ( col / 382 )*0.95 
-
+training data : 1800개
+validation data : 200개
+<br><br>
+training<br>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/training_dataset_confusion_matrix.png" height=400px width=450px> </img>
+96.750%
+<br>
+validation<br>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/validation_dataset_confusion_matrix.png" height=400px width=450px> </img>
+93.000%
 <br><br><br>
 
-### 2. [inputdata.ipynb](https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/inputdata.ipynb)
+
+
+### 2. timestretch + reversed data
+#### [inputdata.ipynb](https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/inputdata.ipynb)
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/data2.png" height=1200px width=700px> </img>
+
+
+처음 zero padding 된 data 1000개 + zero padding 제거한 data 1000개 + 좌우반전 data 2000개<br>
+총 4000개로 학습한 결과입니다.
 <br>
-
-timestretch 후
-log scale변환, normalization한 뒤
-.pt 로 저장
-
+training data : 3800개
+validation data : 200개
+<br><br>
+training<br>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/training_dataset_confusion_matrix2.png" height=400px width=450px> </img>
+99.1667%
+<br>
+validation<br>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/validation_dataset_confusion_matrix2.png" height=400px width=450px> </img>
+97.000%
 <br><br><br>
-### 3. [DenseNet-aug1.ipynb](https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/DenseNet-aug1.ipynb)
 
 
-<!--
-1. _densenet(growth_rate = 20, block_config = (5,5,5), num_init_features=32)>  : mag, phase
-2. _densenet(growth_rate = 64, block_config = (5,5,4), num_init_features=64)>  : mag, phase
-3. _densenet(growth_rate = 64, block_config = (5,5,4), num_init_features=64)>  : only mag
--->
 
-epoch=100<br>
-batch_size=20<br>
-lr=0.00002<br>
+### 3. phase제거
 
-<table>
+2. 4000개 data에서 left, right magnitude만 입력으로 해 주었을 때 결과입니다.<br>
+                  (4000, 2, 257, 382)
+<br>
+training data : 3800개
+validation data : 200개
+<br><br>
+training<br>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/training_dataset_confusion_matrix2-1.png" height=400px width=450px> </img>
+99.1053%
+<br>
+validation<br>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/validation_dataset_confusion_matrix2-1.png" height=400px width=450px> </img>
+95.000%
+<br><br><br>
 
-  <tr> 
-      <td colspan="4"><br><br>  _densenet(growth_rate = 20, block_config = (5,5,5), num_init_features=32)>  : mag, phase  </td>
-  </tr>
-
-  <tr>
-    <td> <img src="https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/screenshots/timestretch_train_confusion_matrix.png", height=430px, width=400px> </td>
-    <td> <img src="https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/screenshots/time_stretch_train_dataset_confusion_matrix.png", height=430px, width=400px></td>
-    
- </tr>
-  
-  <tr> 
-      <td colspan="4">
-       training accuracy: 94.625%<br>
-       validation accuracy: 67.50%<br>
-      </td>
-  </tr>
-  
-  
-    
-  <tr> 
-      <td colspan="4"><br><br> _densenet(growth_rate = 64, block_config = (5,5,4), num_init_features=64)>  : mag, phase </td>
-  </tr>
-
-  <tr>
-    <td> <img src="https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/screenshots/timestretch_train_confusion_matrix2.png", height=430px, width=400px> </td>
-    <td> <img src="https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/screenshots/time_stretch_train_dataset_confusion_matrix2.png", height=430px, width=400px></td>
-  </tr>
-  
-  <tr> 
-      <td colspan="4">
-       training accuracy: 99.50%<br>
-       validation accuracy: 57.5%<br>
-      </td>
-  </tr>
-  
-  
-    
-  <tr> 
-      <td colspan="4"><br><br> 3. _densenet(growth_rate = 64, block_config = (5,5,4), num_init_features=64)>  : mag,_  </td>
-  </tr>
-
-  <tr>
-    <td> <img src="https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/screenshots/timestretch_train_confusion_matrix3.png", height=430px, width=400px> </td>
-    <td> <img src="https://github.com/Kang-Dong-Hwi/data-augmentation/blob/master/screenshots/time_stretch_train_dataset_confusion_matrix3.png", height=430px, width=400px></td>
-  </tr>
-  
-  <tr> 
-      <td colspan="4">
-       training accuracy: 96.75%<br>
-       validation accuracy: 88.00%<br>
-      </td>
-  </tr>
-  
-  
-  
-</table>
