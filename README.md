@@ -7,7 +7,7 @@
 #### [DenseNet0818.ipynb](https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/DenseNet0818.ipynb)
 <br>
 
-<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/data.png", height=430px, width=400px> </img>
+<img src="https://github.com/Kang-Dong-Hwi/data-augmentation-0818/blob/master/Screenshots/data.png" height=430px width=400px> </img>
 
 
 binary_search : zero padding 시작되는 column의 (index -1) 반환 <br>
